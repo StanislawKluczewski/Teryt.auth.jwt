@@ -1,5 +1,6 @@
 const http = require('http');
 const app = require('./app');
+const { API_PORT } = process.env;
 
 const normalizePort = ((val) => {
     const port = parseInt(val, 10);
@@ -10,7 +11,7 @@ const normalizePort = ((val) => {
     }
 })
 
-const port = normalizePort(process.env.PORT || 3000);
+const port = normalizePort(process.env.PORT || API_PORT);
 const server = http.createServer(app);
 
 server.listen(port, () => {
