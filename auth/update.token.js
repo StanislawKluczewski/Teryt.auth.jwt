@@ -3,7 +3,6 @@ const { REFRESH_TOKEN_KEY } = process.env;
 
 exports.updateToken = async function (req, res) {
     try {
-
         if (req.token) {
 
             const refreshedToken = jwt.sign({
@@ -12,7 +11,6 @@ exports.updateToken = async function (req, res) {
             }, REFRESH_TOKEN_KEY, {
                 expiresIn: "15ms"
             });
-
             return refreshedToken;
 
         } else {
@@ -20,7 +18,6 @@ exports.updateToken = async function (req, res) {
                 message: `User has no token`
             })
         }
-
     } catch (error) {
         console.log(`Something went wrong! Erorr: ${error}`);
     }
