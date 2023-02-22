@@ -22,3 +22,22 @@ Node version: 16.15.1
 ExpressJs version: 4.18.2
 
 MongoDB version: 5.0.9
+
+
+### User 
+Authentication is made by jsonwebtoken and bcryptjs.
+
+##### Sign up
+```http
+  POST /users/register
+```
+
+##### Login
+```http
+  POST /users/login
+```
+
+##### Logout
+```http
+  POST /users/logout
+```

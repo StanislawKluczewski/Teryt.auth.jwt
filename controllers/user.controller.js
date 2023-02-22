@@ -23,12 +23,14 @@ exports.register = async function (req, res) {
         const newUser = new User({
             login: login,
             email: email.toLowerCase(),
-            password: encryptedPassword
+            password: encryptedPassword,
+            isLogged: false
         })
 
         const token = jwt.sign({
             userId: newUser._id,
-            email: newUser.email
+            email: newUser.email,
+            isLogged: newUser.isLogged
         }, TOKEN_KEY, {
             expiresIn: "10ms"
         });
@@ -63,11 +65,14 @@ exports.login = async function (req, res) {
         await auth.updateToken(foundUser).then(result => {
             refreshedToken = result;
         });
+        foundUser.isLogged = true;
+        foundUser.token = refreshedToken;
         await User.findByIdAndUpdate(foundUser._id, {
             login: foundUser.login,
             email: foundUser.email,
             password: foundUser.password,
-            token: refreshedToken
+            token: foundUser.token,
+            isLogged: foundUser.isLogged
         })
 
         return res.status(200).json({
@@ -78,10 +83,30 @@ exports.login = async function (req, res) {
     } else {
         res.status(400).send("Invalid Credentials");
     }
+}
 
 
+exports.logout = async function (req, res) {
+    try {
 
+        if (!(req.headers.token)) {
+            res.status(404).send("User not found");
+        }
+        const foundUser = await User.findOne({ token: req.headers.token });
+        await User.findByIdAndUpdate(foundUser._id, {
+            login: foundUser.login,
+            email: foundUser.email,
+            password: foundUser.password,
+            token: foundUser.token,
+            isLogged: false
+        })
 
+        return res.status(200).json({
+            message: 'User has been logged out',
+        })
+    } catch (error) {
+        console.log(`Something went wrong! Erorr: ${error}`);
+    }
 
 }
 
