@@ -75,10 +75,7 @@ exports.login = async function (req, res) {
             isLogged: foundUser.isLogged
         })
 
-        return res.status(200).json({
-            message: 'User has been logged in',
-            user: foundUser
-        })
+        return res.status(200).send(JSON.stringify(foundUser.token));
 
     } else {
         res.status(400).send("Invalid Credentials");
@@ -88,11 +85,10 @@ exports.login = async function (req, res) {
 
 exports.logout = async function (req, res) {
     try {
-
-        if (!(req.headers.token)) {
-            res.status(404).send("User not found");
+        if (!(req.body.token)) {
+            return res.status(404).send("User not found");
         }
-        const foundUser = await User.findOne({ token: req.headers.token });
+        const foundUser = await User.findOne({ token: req.body.token });
         await User.findByIdAndUpdate(foundUser._id, {
             login: foundUser.login,
             email: foundUser.email,
